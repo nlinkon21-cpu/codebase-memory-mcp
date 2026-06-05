@@ -15,6 +15,7 @@
  */
 #include "test_framework.h"
 #include "cbm.h"
+#include "grammar_cases.h"
 
 static int reg_has_def_any(CBMFileResult *r, const char *name) {
     for (int i = 0; i < r->defs.count; i++) {
@@ -29,16 +30,7 @@ static CBMFileResult *extract(const char *src, CBMLanguage lang, const char *pro
     return cbm_extract_file(src, (int)strlen(src), lang, proj, path, 0, NULL, NULL);
 }
 
-typedef struct {
-    const char *name;
-    CBMLanguage lang;
-    const char *path;
-    const char *src;
-    int min_defs;
-    const char *expect[4];
-} GrammarCase;
-
-static const GrammarCase CASES[] = {
+const GrammarCase CBM_GRAMMAR_CASES[] = {
     /* ── LSP-backed / mainstream code languages (expect named defs) ── */
     {"go", CBM_LANG_GO, "a.go", "package m\nfunc Foo() {}\nfunc Bar() int { return 0 }\n", 2, {"Foo", "Bar", NULL}},
     {"c", CBM_LANG_C, "a.c", "int foo(void){return 0;}\nint bar(void){return 1;}\n", 2, {"foo", "bar", NULL}},
@@ -207,11 +199,13 @@ static const GrammarCase CASES[] = {
     {"mermaid", CBM_LANG_MERMAID, "a.mmd", "graph TD\n  A --> B\n", 0, {NULL}},
 };
 
+const size_t CBM_GRAMMAR_CASES_COUNT = sizeof(CBM_GRAMMAR_CASES) / sizeof(CBM_GRAMMAR_CASES[0]);
+
 TEST(grammar_regression_all) {
     int failures = 0;
-    size_t n = sizeof(CASES) / sizeof(CASES[0]);
+    size_t n = CBM_GRAMMAR_CASES_COUNT;
     for (size_t i = 0; i < n; i++) {
-        const GrammarCase *c = &CASES[i];
+        const GrammarCase *c = &CBM_GRAMMAR_CASES[i];
         CBMFileResult *r = extract(c->src, c->lang, "reg", c->path);
         if (!r) {
             fprintf(stderr, "  [REG] %-14s extract returned NULL\n", c->name);

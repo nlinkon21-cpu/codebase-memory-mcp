@@ -21,6 +21,8 @@ extern void suite_str_util(void);
 extern void suite_platform(void);
 extern void suite_extraction(void);
 extern void suite_grammar_regression(void);
+extern void suite_grammar_labels(void);
+extern void suite_grammar_imports(void);
 extern void suite_ac(void);
 extern void suite_store_nodes(void);
 extern void suite_store_edges(void);
@@ -73,6 +75,7 @@ extern void suite_ui(void);
 extern void suite_security(void);
 extern void suite_yaml(void);
 extern void suite_integration(void);
+extern void suite_lang_contract(void);
 extern void suite_incremental(void);
 extern void suite_simhash(void);
 extern void suite_stack_overflow(void);
@@ -93,6 +96,8 @@ int main(void) {
     RUN_SUITE(ac);
     RUN_SUITE(extraction);
     RUN_SUITE(grammar_regression);
+    RUN_SUITE(grammar_labels);
+    RUN_SUITE(grammar_imports);
 
     /* Store (M5) */
     RUN_SUITE(store_nodes);
@@ -196,6 +201,10 @@ int main(void) {
 
     /* Integration (end-to-end) */
     RUN_SUITE(integration);
+
+    /* Per-language graph contracts (node/edge types, attribution, no-crash) */
+    RUN_SUITE(lang_contract);
+
     RUN_SUITE(incremental);
 
     /* Release sqlite3 internal caches so ASan doesn't report them as leaks */
